@@ -8,6 +8,7 @@
             <connections>
                 <outlet property="bgImg" destination="P0J-p9-Ejx" id="idV-D5-CBP"/>
                 <outlet property="indicatorView" destination="UdX-Gs-zqJ" id="5n0-MJ-HqZ"/>
+                <outlet property="logout" destination="gWW-EK-6Wl" id="MoK-Mk-QEZ"/>
                 <outlet property="rofoufLbl" destination="2k1-RG-BwW" id="laQ-w9-Wg5"/>
                 <outlet property="rofoufTableView" destination="Hnt-gw-q4q" id="hqO-4j-9Yr"/>
                 <outlet property="view" destination="2" id="3"/>
@@ -44,6 +45,17 @@
                     <rect key="frame" x="374" y="502" width="20" height="20"/>
                     <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                 </activityIndicatorView>
+                <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="gWW-EK-6Wl">
+                    <rect key="frame" x="694" y="10" width="56" height="34"/>
+                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="20"/>
+                    <state key="normal" title="خروج">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <connections>
+                        <action selector="logout:" destination="-1" eventType="touchUpInside" id="6bh-4P-UMJ"/>
+                    </connections>
+                </button>
             </subviews>
             <color key="backgroundColor" white="0.0" alpha="1" colorSpace="calibratedWhite"/>
             <simulatedStatusBarMetrics key="simulatedStatusBarMetrics" statusBarStyle="lightContent"/>

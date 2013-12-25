@@ -11,14 +11,27 @@
 #import <CommonCrypto/CommonDigest.h>
 
 @implementation AppDelegate
-@synthesize homeViewController;
+@synthesize homeViewController, filePath, loginViewController;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
     self.window = [[UIWindow alloc] initWithFrame:[[UIScreen mainScreen] bounds]];
     
-    homeViewController = [[HomeViewController alloc] init];
-    UINavigationController *navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    UINavigationController *navigationController;
+    
+    NSUserDefaults *defaults  = [NSUserDefaults standardUserDefaults];
+    NSString *logged      = [defaults objectForKey:@"logged"];
+    if([logged isEqualToString:@"yes"])
+    {
+        homeViewController = [[HomeViewController alloc] init];
+        navigationController = [[UINavigationController alloc] initWithRootViewController:homeViewController];
+    }
+    else
+    {
+        loginViewController = [[LoginViewController alloc] init];
+        navigationController = [[UINavigationController alloc] initWithRootViewController:loginViewController];
+    }
+    
     self.window.rootViewController = navigationController;
     
     [self.window makeKeyAndVisible];
@@ -75,7 +88,8 @@
 }
 
 
--(UIImage *)imageFromPDFWithDocumentRef:(CGPDFDocumentRef)documentRef {
+-(UIImage *)imageFromPDFWithDocumentRef:(CGPDFDocumentRef)documentRef
+{
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(documentRef, 1);
     CGRect pageRect = CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox);
     
@@ -98,43 +112,66 @@
         return NO;
     }
     
+    NSUserDefaults *defaults  = [NSUserDefaults standardUserDefaults];
+    NSString *logged      = [defaults objectForKey:@"logged"];
+    if(![logged isEqualToString:@"yes"])
+    {
+        return YES;
+    }
+    
     NSArray *bookNameArray = [url.absoluteString componentsSeparatedByString:@"/"];
     NSString *bookName = [bookNameArray lastObject];
-    NSString *filePath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Inbox"] stringByAppendingPathComponent:bookName];
+    self.filePath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Inbox"] stringByAppendingPathComponent:bookName];
     
-    NSData *pdfData   = [NSData dataWithContentsOfFile:filePath];
+    NSData *pdfData   = [NSData dataWithContentsOfFile:self.filePath];
     NSString *bookMD5 = [self dataMD5:pdfData];
     
     if([UserDefaults isBookExistWithMD5:bookMD5])
     {
-        [[NSFileManager defaultManager] removeItemAtPath:filePath error:NULL];
+        [[NSFileManager defaultManager] removeItemAtPath:self.filePath error:NULL];
         return NO;
     }
     
-    NSURL *fileURL = [NSURL fileURLWithPath:filePath];
+    NSURL *fileURL = [NSURL fileURLWithPath:self.filePath];
     NSNumber *fileSizeValue = nil;
     NSError *fileSizeError = nil;
     [fileURL getResourceValue:&fileSizeValue
                        forKey:NSURLFileSizeKey
                         error:&fileSizeError];
     
-    NSURL* pdfFileUrl = [NSURL fileURLWithPath:filePath];
+    NSURL* pdfFileUrl = [NSURL fileURLWithPath:self.filePath];
     CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfFileUrl);
     UIImage *bookThumbinal = [self imageFromPDFWithDocumentRef:pdf];
-   // NSData *bookImageData = UIImagePNGRepresentation(bookThumbinal);
     NSData *bookImageData = UIImageJPEGRepresentation(bookThumbinal,0.0);
     
     NSDictionary *bookMetadata = [NSDictionary dictionaryWithObjectsAndKeys:bookMD5,@"bMD5",bookName,@"bName",fileSizeValue,@"bSize",bookImageData,@"bThumbinal", nil];
-    NSMutableArray *book = [[NSMutableArray alloc] init];
+    book = [[NSMutableArray alloc] init];
     [book addObject:bookMetadata];
     
-    [UserDefaults addBook:book];
-    [UserDefaults addUploadingBook:book];
-    
-    [book release];
-    [self.homeViewController getBooks];
+    UIAlertView *uploadAlert = [[UIAlertView alloc] initWithTitle:nil message:@"هل تريد حفظ المستند الى مكتبتك ؟" delegate:self cancelButtonTitle:@"لا" otherButtonTitles:@"نعم", nil];
+    [uploadAlert show];
+    [uploadAlert release];
     
     return YES;
 }
+
+- (void)alertView:(UIAlertView *)alertView clickedButtonAtIndex:(NSInteger)buttonIndex
+{
+    if (buttonIndex == 1)
+    {
+        [UserDefaults addBook:book];
+        [UserDefaults addUploadingBook:book];
+        
+        [book release];
+        [self.homeViewController getBooks];
+    }
+    else
+    {
+        NSLog(@"%@",self.filePath);
+        [[NSFileManager defaultManager] removeItemAtPath:self.filePath error:NULL];
+    }
+}
+
+
 
 @end

@@ -1,31 +1,30 @@
 //
-//  HomeViewController.m
+//  AddBooksViewController.m
 //  Rofouf
 //
-//  Created by Mohamed Alaa El-Din on 12/22/13.
+//  Created by mohamed.alaa on 12/25/13.
 //  Copyright (c) 2013 Mohamed Alaa El-Din. All rights reserved.
 //
 
-#import "HomeViewController.h"
-#import "ArabicConverter.h"
-#import "Constants.h"
-#import "UserDefaults.h"
-#import "HorizontalTableView.h"
-#import "NetworkService.h"
 #import "AddBooksViewController.h"
+#import "Constants.h"
+#import "ArabicConverter.h"
+#import "UserDefaults.h"
+#import <CommonCrypto/CommonDigest.h>
+#import "HorizontalTableView.h"
 
-@interface HomeViewController () <MyComicCellDelegate, UIGestureRecognizerDelegate>
+@interface AddBooksViewController () <MyComicCellDelegate, UIGestureRecognizerDelegate>
 
 @end
 
-@implementation HomeViewController
+@implementation AddBooksViewController
 @synthesize reusableCells, booksArray;
 
 - (id)initWithNibName:(NSString *)nibNameOrNil bundle:(NSBundle *)nibBundleOrNil
 {
     self = [super initWithNibName:nibNameOrNil bundle:nibBundleOrNil];
     if (self) {
-        
+        // Custom initialization
     }
     return self;
 }
@@ -33,24 +32,6 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
-    
-    bookUploadingName = [[[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 30)] autorelease];
-    [bookUploadingName setBackgroundColor:[UIColor clearColor]];
-    [bookUploadingName setTextColor:[UIColor darkGrayColor]];
-    [bookUploadingName setFont:[UIFont systemFontOfSize:10]];
-    [bookUploadingName setHidden:YES];
-    [self.view addSubview:bookUploadingName];
-    
-    progressView = [[[UIProgressView alloc] initWithFrame:CGRectMake(10.0f, 40.0f, 200, 9.0f)] autorelease];
-    [progressView setProgressViewStyle: UIProgressViewStyleDefault];
-    [progressView setHidden:YES];
-    [self.view addSubview:progressView];
-    
-    currentView = 0;
-    
-    [self.indicatorView setHidden:NO];
-    [self.indicatorView startAnimating];
-    
     [self.navigationController setNavigationBarHidden:YES];
     [self.indicatorView startAnimating];
     [self.rofoufTableView setBackgroundColor:[UIColor clearColor]];
@@ -58,10 +39,8 @@
     ArabicConverter *converter = [[[ArabicConverter alloc] init] autorelease] ;
     self.rofoufLbl.text        = [converter convertArabic:@"رفوف"];
     self.rofoufLbl.font        = [UIFont fontWithName:Font size:75];
-   
-    [NSThread detachNewThreadSelector:@selector(getBooks) toTarget:self withObject:nil];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(UpdateList) name:UPDATE_LIST object:nil];
+    [NSThread detachNewThreadSelector:@selector(getBooks) toTarget:self withObject:nil];
     
     if(IS_IPAD)
     {
@@ -75,22 +54,10 @@
         [self.view bringSubviewToFront:pageControl];
     }
     
-    [self initializeStopShakingGesture];
-    
     [self initializeOrientation];
     
     [[UIDevice currentDevice] beginGeneratingDeviceOrientationNotifications];
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(orientationChanged:) name:UIDeviceOrientationDidChangeNotification object:nil];
-    
-    if (!networkQueue)
-        networkQueue = [[ASINetworkQueue alloc] init];
-    
-    [networkQueue reset];
-    [networkQueue setRequestDidFinishSelector:@selector(finished:)];
-    [networkQueue setRequestDidFailSelector:@selector(failed:)];
-    [networkQueue setShowAccurateProgress: YES];
-    [networkQueue setDelegate:self];
-    [networkQueue go];
 }
 
 - (NSString*)dataMD5:(NSData*)data {
@@ -132,50 +99,44 @@
     return finalImage;
 }
 
--(void) checkNewFilesInItunes
+-(void) getFilesFromItunes
 {
     NSArray *paths = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES);
     NSArray *pdfs = [[NSBundle bundleWithPath:[paths objectAtIndex:0]] pathsForResourcesOfType:@"pdf" inDirectory:nil];
-
+    
+    self.booksArray = [NSMutableArray array];
     for(int i = 0 ; i < pdfs.count ; i++)
     {
+        NSArray *bookNameArray = [[pdfs objectAtIndex:i] componentsSeparatedByString:@"/"];
+        NSString *bookName = [bookNameArray lastObject];
+        
         
         NSData *pdfData   = [NSData dataWithContentsOfFile:[pdfs objectAtIndex:i]];
         NSString *bookMD5 = [self dataMD5:pdfData];
         
         if([UserDefaults isBookExistWithMD5:bookMD5])
             continue;
-         else
-         {
-             AddBooksViewController *addBooksViewController = [[AddBooksViewController alloc] init];
-             [self presentViewController:addBooksViewController animated:YES completion:NULL];
-             break;
-         }
-    }
-}
-
--(void)viewWillDisappear:(BOOL)animated
-{
-    [self stopShaking];
-}
-
--(void)viewWillAppear:(BOOL)animated
-{
-    if ([[UserDefaults getStringWithKey:NEW_COMIC] integerValue] == 1)
-        [self UpdateList];
-}
-
--(void)UpdateList
-{
-    [UserDefaults addObject:@"1" withKey:NEW_COMIC ifKeyNotExists:NO];
-    
-    if([[UserDefaults getStringWithKey:Downlaod_Count] integerValue ] == 0)
-    {
-        [self.indicatorView setHidden:NO];
-        [self.indicatorView startAnimating];
-        [self.booksArray removeAllObjects];
-        [self getBooks];
-        [UserDefaults addObject:nil withKey:NEW_COMIC ifKeyNotExists:NO];
+        
+        
+        NSURL *fileURL = [NSURL fileURLWithPath:[pdfs objectAtIndex:i]];
+        NSNumber *fileSizeValue = nil;
+        NSError *fileSizeError  = nil;
+        [fileURL getResourceValue:&fileSizeValue
+                           forKey:NSURLFileSizeKey
+                            error:&fileSizeError];
+        
+        NSURL* pdfFileUrl = [NSURL fileURLWithPath:[pdfs objectAtIndex:i]];
+        CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfFileUrl);
+        UIImage *bookThumbinal = [self imageFromPDFWithDocumentRef:pdf];
+        
+        NSData *bookImageData = UIImageJPEGRepresentation(bookThumbinal,0.0);
+        
+        NSDictionary *bookMetadata = [NSDictionary dictionaryWithObjectsAndKeys:bookMD5,@"bMD5",bookName,@"bName",fileSizeValue,@"bSize",bookImageData,@"bThumbinal", nil];
+        NSMutableArray *book = [[NSMutableArray alloc] init];
+        [book addObject:bookMetadata];
+        
+        [self.booksArray addObject:book];
+        [book release];
     }
 }
 
@@ -210,13 +171,13 @@
     }
 }
 
+
 -(void)landscape
 {
     if(IS_IPAD)
     {
         [pageControl setFrame:CGRectMake(((self.view.frame.size.width / 2) - 50), 768 -100, 100, 100)];
-        [self.logout setFrame:CGRectMake(950, self.logout.frame.origin.y, self.logout.frame.size.width, self.logout.frame.size.height)];
-        
+        [self.chooseLbl setFrame:CGRectMake(801, self.chooseLbl.frame.origin.y, self.chooseLbl.frame.size.width, self.chooseLbl.frame.size.height)];
         maxBooksPerView = 12;
         rowHeight   = 272;
         sectionSize = 6 ;
@@ -259,8 +220,8 @@
     if(IS_IPAD)
     {
         [pageControl setFrame:CGRectMake( ((768 / 2) - 50), 1024 -100, 100, 100)];
-        [self.logout setFrame:CGRectMake(694, self.logout.frame.origin.y, self.logout.frame.size.width, self.logout.frame.size.height)];
         
+        [self.chooseLbl setFrame:CGRectMake(545, self.chooseLbl.frame.origin.y, self.chooseLbl.frame.size.width, self.chooseLbl.frame.size.height)];
         maxBooksPerView = 12;
         rowHeight   = 264;
         sectionSize = 4 ;
@@ -361,107 +322,29 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            [self checkNewFilesInItunes];
-            self.booksArray = [NSMutableArray array];
-            self.booksArray = [UserDefaults getArrayWithKey:BOOKS_METADATA_LIST];
+            [self getFilesFromItunes];
             
+          
+            
+            //[UserDefaults addBook:book];
+            //[UserDefaults addUploadingBook:book];
             if(IS_IPAD)
             {
                 booksViewsCount = self.booksArray.count / maxBooksPerView;
                 if(self.booksArray.count % maxBooksPerView != 0)
                     booksViewsCount++;
-        
+                
                 if(booksViewsCount == 1)
                     pageControl.numberOfPages = 0;
                 else
                     pageControl.numberOfPages = booksViewsCount;
-        
+                
                 pageControl.currentPage = booksViewsCount - 1;
             }
- 
+            
             [self loadComicsInCells:(currentView * maxBooksPerView)];
         });
     });
-}
-
-- (IBAction)logout:(id)sender {
-    [[NSUserDefaults standardUserDefaults] setObject:@"no" forKey:@"logged"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
-    
-    LoginViewController *loginViewController = [[LoginViewController alloc] init];
-    [self.navigationController pushViewController:loginViewController animated:YES];
-}
-
--(void)upload
-{
-    uploadingBooksList = [NSMutableArray array];
-    uploadingBooksList = [UserDefaults getArrayWithKey:stillUploading];
-    
-    if(uploadingBooksList.count > 0)
-    {
-        if(!uploading)
-        {
-            if ([[NetworkService getObject] checkInternetWithData])
-                [NSThread detachNewThreadSelector:@selector(upLoadFilesToServer) toTarget:self withObject:nil];
-            else
-                [self showAlert];
-        }
-    }
-
-}
-
--(void)upLoadFilesToServer
-{
-    uploading = TRUE;
-    if(uploadingBooksList.count <= 0)
-        return;
-    
-    NSString *bookName = [[[uploadingBooksList objectAtIndex:0] valueForKey:@"bName"] objectAtIndex:0];
-    
-    [bookUploadingName setHidden:NO];
-    [bookUploadingName setText:[NSString stringWithFormat:@"uploading %@ to server",bookName]];
-    
-    [progressView setHidden:NO];
-   
-    NSString *filePath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents/Inbox"] stringByAppendingPathComponent:bookName];
-    NSData *myData = [NSData dataWithContentsOfFile:filePath];
-    
-    NSString *userAgent = @"AKIAJ3P4BMg8i71rMSmaslyiS2OvoBrS/nZVI4qgtzzJC5TvTtRPPBKXLTOA";
-    NSString *urlString = @"http://files.rofouf.org.s3.amazonaws.com/pdf-documents/";
-    
-    ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
-    [request addRequestHeader:userAgent value:@"ASIHTTPRequest"];
-    [request shouldContinueWhenAppEntersBackground];
-    [request setUploadProgressDelegate:progressView];
-    [request appendPostData:myData];
-    [request setRequestMethod:@"PUT"];
-    [request setDidFinishSelector:@selector(finished:)];
-    [networkQueue addOperation:request];
-}
-
-- (void)finished:(ASIHTTPRequest *)request
-{
-    NSLog(@"finished");
-    [UserDefaults removeUploadingBookWithMD5:[[[uploadingBooksList objectAtIndex:0] valueForKey:@"bMD5"] objectAtIndex:0]];
-    uploadingBooksList = [UserDefaults getArrayWithKey:stillUploading];
-    
-    if(uploadingBooksList.count > 0)
-        [self upLoadFilesToServer];
-    else
-    {
-        uploading = FALSE;
-        [progressView setProgress:0];
-        [bookUploadingName setHidden:YES];
-        [progressView setHidden:YES];
-    }
-}
-
--(void)failed:(ASIHTTPRequest *)request
-{
-    NSLog(@"failed");
-    [bookUploadingName setHidden:YES];
-    [progressView setHidden:YES];
-    [self showAlert];
 }
 
 -(void)loadComicsInCells
@@ -503,7 +386,6 @@
     [self.rofoufTableView reloadData];
     [self.indicatorView setHidden:YES];
     [self.indicatorView stopAnimating];
-    [self performSelector:@selector(upload) withObject:nil afterDelay:1.0];
 }
 
 -(void)loadComicsInCells:(int)index
@@ -554,19 +436,10 @@
     [self.rofoufTableView reloadData];
     [self.indicatorView setHidden:YES];
     [self.indicatorView stopAnimating];
-    [self performSelector:@selector(upload) withObject:nil afterDelay:1.0];
 }
 
 
 #pragma mark Gesture
-
--(void)initializeStopShakingGesture
-{
-    UITapGestureRecognizer *Tapped = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(stopShaking)];
-    Tapped.numberOfTapsRequired = 2;
-    Tapped.delegate = self;
-    [self.view addGestureRecognizer:Tapped];
-}
 
 -(void)initializeSwipewGestureInTableView
 {
@@ -649,61 +522,6 @@
     [cell setBackgroundColor:[UIColor clearColor]];
 }
 
-#pragma mark Shake Cell delegate
-
--(void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset
-{
-    if(shaking)
-        [self shakeCell];
-}
-
--(void)scrollViewWillBeginDecelerating:(UIScrollView *)scrollView
-{
-    if(shaking)
-        [self shakeCell];
-}
-
--(void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView
-{
-    if(shaking)
-        [self shakeCell];
-}
-
--(void)shakeCell
-{
-    shaking = YES ;
-    for (int section = 0 ; section < reusableCells.count ; section ++)
-    {
-        [(HorizontalTableView *)[self.reusableCells  objectAtIndex:section] shakeAnimation];
-    }
-}
-
--(void)stopShake
-{
-    [self stopShaking];
-}
-
--(void)deleteCell
-{
-    [self performSelector:@selector(shakeCell) withObject:nil afterDelay:0.05];
-}
-
--(void)updateListDelegate
-{
-    if([[UserDefaults getStringWithKey:NEW_COMIC] integerValue]==1)
-        [self UpdateList];
-}
-
--(void)stopShaking
-{
-    shaking = NO ;
-    for (int section = 0 ; section < reusableCells.count ; section ++)
-    {
-        [(HorizontalTableView *)[self.reusableCells  objectAtIndex:section] stopShaking];
-    }
-}
-
-
 #pragma mark alerts
 
 -(void)showAlert
@@ -715,6 +533,7 @@
 
 #pragma dealloc
 
+
 - (void)didReceiveMemoryWarning
 {
     [super didReceiveMemoryWarning];
@@ -722,7 +541,7 @@
 }
 
 - (void)dealloc {
-    [_logout release];
+    [_chooseLbl release];
     [super dealloc];
 }
 @end

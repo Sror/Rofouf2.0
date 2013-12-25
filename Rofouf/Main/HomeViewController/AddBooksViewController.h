@@ -1,17 +1,14 @@
 //
-//  HomeViewController.h
+//  AddBooksViewController.h
 //  Rofouf
 //
-//  Created by Mohamed Alaa El-Din on 12/22/13.
+//  Created by mohamed.alaa on 12/25/13.
 //  Copyright (c) 2013 Mohamed Alaa El-Din. All rights reserved.
 //
 
 #import <UIKit/UIKit.h>
-#import "ASINetworkQueue.h"
-#import <CommonCrypto/CommonDigest.h>
-#import "LoginViewController.h"
 
-@interface HomeViewController : UIViewController <UITableViewDataSource, UITableViewDelegate,ASIHTTPRequestDelegate>
+@interface AddBooksViewController : UIViewController<UITableViewDataSource, UITableViewDelegate>
 {
     int sectionSize, rowHeight, booksViewsCount, maxBooksPerView, currentView, lastOrientation;
     BOOL shaking, uploading;
@@ -20,8 +17,6 @@
     UIProgressView *progressView;
     UILabel *bookUploadingName;
     NSMutableArray *uploadingBooksList;
-    ASINetworkQueue *networkQueue;
-    UIView *addBookView;
 }
 @property (strong, nonatomic) IBOutlet UILabel *rofoufLbl;
 @property (strong, nonatomic) IBOutlet UIImageView *bgImg;
@@ -30,8 +25,6 @@
 
 @property (strong, nonatomic) NSMutableArray *reusableCells;
 @property (strong, nonatomic) NSMutableArray *booksArray;
-@property (retain, nonatomic) IBOutlet UIButton *logout;
 
--(void)getBooks;
-- (IBAction)logout:(id)sender;
+@property (retain, nonatomic) IBOutlet UILabel *chooseLbl;
 @end

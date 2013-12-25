@@ -117,6 +117,10 @@
 		A2AF01621866E329003AA0D3 /* UsageData.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AF01181866E329003AA0D3 /* UsageData.m */; };
 		A2AF01641866E329003AA0D3 /* UIDevice.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AF011E1866E329003AA0D3 /* UIDevice.m */; };
 		A2AF01651866E329003AA0D3 /* XMLReader.m in Sources */ = {isa = PBXBuildFile; fileRef = A2AF01211866E329003AA0D3 /* XMLReader.m */; };
+		A2C4F351186AB74D00902927 /* AddBooksViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C4F34F186AB74D00902927 /* AddBooksViewController.m */; };
+		A2C4F352186AB74D00902927 /* AddBooksViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2C4F350186AB74D00902927 /* AddBooksViewController.xib */; };
+		A2C4F356186ADBD000902927 /* LoginViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = A2C4F354186ADBD000902927 /* LoginViewController.m */; };
+		A2C4F357186ADBD000902927 /* LoginViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = A2C4F355186ADBD000902927 /* LoginViewController.xib */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -310,6 +314,12 @@
 		A2AF011E1866E329003AA0D3 /* UIDevice.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = UIDevice.m; sourceTree = "<group>"; };
 		A2AF01201866E329003AA0D3 /* XMLReader.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = XMLReader.h; sourceTree = "<group>"; };
 		A2AF01211866E329003AA0D3 /* XMLReader.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = XMLReader.m; sourceTree = "<group>"; };
+		A2C4F34E186AB74D00902927 /* AddBooksViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = AddBooksViewController.h; sourceTree = "<group>"; };
+		A2C4F34F186AB74D00902927 /* AddBooksViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = AddBooksViewController.m; sourceTree = "<group>"; };
+		A2C4F350186AB74D00902927 /* AddBooksViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = AddBooksViewController.xib; sourceTree = "<group>"; };
+		A2C4F353186ADBD000902927 /* LoginViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = LoginViewController.h; sourceTree = "<group>"; };
+		A2C4F354186ADBD000902927 /* LoginViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = LoginViewController.m; sourceTree = "<group>"; };
+		A2C4F355186ADBD000902927 /* LoginViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LoginViewController.xib; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -582,6 +592,9 @@
 		A2AF00731866C939003AA0D3 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				A2C4F353186ADBD000902927 /* LoginViewController.h */,
+				A2C4F354186ADBD000902927 /* LoginViewController.m */,
+				A2C4F355186ADBD000902927 /* LoginViewController.xib */,
 			);
 			path = ViewControllers;
 			sourceTree = "<group>";
@@ -596,6 +609,9 @@
 				A20722B318670ADC00A0C51C /* HorizontalTableView.m */,
 				A20722B018670ADC00A0C51C /* BookCell.h */,
 				A20722B118670ADC00A0C51C /* BookCell.m */,
+				A2C4F34E186AB74D00902927 /* AddBooksViewController.h */,
+				A2C4F34F186AB74D00902927 /* AddBooksViewController.m */,
+				A2C4F350186AB74D00902927 /* AddBooksViewController.xib */,
 			);
 			path = HomeViewController;
 			sourceTree = "<group>";
@@ -927,8 +943,10 @@
 				A2AF008D1866E251003AA0D3 /* bg.png in Resources */,
 				A2AF004F1866C8BB003AA0D3 /* Images.xcassets in Resources */,
 				A2AF007A1866C97B003AA0D3 /* HomeViewController.xib in Resources */,
+				A2C4F352186AB74D00902927 /* AddBooksViewController.xib in Resources */,
 				A2AF00911866E251003AA0D3 /* Cloud.png in Resources */,
 				A2AF013C1866E329003AA0D3 /* AppIcon-144.png in Resources */,
+				A2C4F357186ADBD000902927 /* LoginViewController.xib in Resources */,
 				A2AF01451866E329003AA0D3 /* Reader-Mark-N.png in Resources */,
 				A2AF01411866E329003AA0D3 /* Reader-Button-N.png in Resources */,
 				A2AF01401866E329003AA0D3 /* Reader-Button-H@2x.png in Resources */,
@@ -1008,6 +1026,7 @@
 				A20722C718670B9400A0C51C /* zip.c in Sources */,
 				A20722C518670B9400A0C51C /* mztools.c in Sources */,
 				A2AF01301866E329003AA0D3 /* ASIDownloadCache.m in Sources */,
+				A2C4F356186ADBD000902927 /* LoginViewController.m in Sources */,
 				A20722AA1866EB1400A0C51C /* AFHTTPRequestOperation.m in Sources */,
 				A2AF014E1866E329003AA0D3 /* ReaderConstants.m in Sources */,
 				A2AF00791866C97B003AA0D3 /* HomeViewController.m in Sources */,
@@ -1019,6 +1038,7 @@
 				A20722D718670C0100A0C51C /* TBXML.m in Sources */,
 				A2AF01501866E329003AA0D3 /* ReaderContentTile.m in Sources */,
 				A2AF014D1866E329003AA0D3 /* CGPDFDocument.m in Sources */,
+				A2C4F351186AB74D00902927 /* AddBooksViewController.m in Sources */,
 				A2AF01361866E329003AA0D3 /* NetworkService.m in Sources */,
 				A2AF01331866E329003AA0D3 /* ASIInputStream.m in Sources */,
 			);
