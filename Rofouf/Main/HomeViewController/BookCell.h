@@ -1,6 +1,7 @@
 
 
 #import <UIKit/UIKit.h>
+#import "AppDelegate.h"
 
 @class ArticleTitleLabel;
 
@@ -15,6 +16,7 @@
     UIActivityIndicatorView *indicatorView;
 }
 
+@property (nonatomic) BOOL selectedFlag;
 @property (nonatomic, retain) UILabel *cellTitle;
 @property (nonatomic, retain) UIImageView *thumbnail;
 @property (nonatomic, retain) UIImageView *downloadedImage;

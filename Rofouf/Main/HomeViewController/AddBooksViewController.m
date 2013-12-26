@@ -12,6 +12,7 @@
 #import "UserDefaults.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "HorizontalTableView.h"
+#import "AppDelegate.h"
 
 @interface AddBooksViewController () <MyComicCellDelegate, UIGestureRecognizerDelegate>
 
@@ -32,6 +33,9 @@
 - (void)viewDidLoad
 {
     [super viewDidLoad];
+    
+    ((AppDelegate *)[UIApplication sharedApplication].delegate).itunesFlag = 1;
+    
     [self.navigationController setNavigationBarHidden:YES];
     [self.indicatorView startAnimating];
     [self.rofoufTableView setBackgroundColor:[UIColor clearColor]];
@@ -504,11 +508,13 @@
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
+    
     return 1;
 }
 
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
 {
+    
     return [self.reusableCells count];
 }
 

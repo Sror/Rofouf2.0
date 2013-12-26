@@ -6,7 +6,7 @@
 #import "UsageData.h"
 
 @implementation BookCell
-@synthesize progressView, downloadedImage, indicatorView, deleteButton, cellView, thumbnail, cellTitle;
+@synthesize progressView, downloadedImage, indicatorView, deleteButton, cellView, thumbnail, cellTitle, selectedFlag;
 
 #pragma mark - View Lifecycle
 - (NSString *)reuseIdentifier
@@ -118,6 +118,32 @@
     return self;
 }
 
+- (void)setSelected:(BOOL)selected animated:(BOOL)animated
+{
+    //[super setSelected:selected animated:animated];
+    
+
+    if(((AppDelegate *)[UIApplication sharedApplication].delegate).itunesFlag == 1 && !selectedFlag)
+    {
+        for(UIView *subview in [self.cellView subviews])
+        {
+            if([subview isKindOfClass:[UIImageView class]])
+            {
+                [[self.cellView viewWithTag:10]removeFromSuperview];
+            }
+        }
+    }
+    else if (((AppDelegate *)[UIApplication sharedApplication].delegate).itunesFlag == 1 && selectedFlag)
+    {
+        UIImageView *selectedImage = [[UIImageView alloc] initWithFrame:self.thumbnail.frame];
+        selectedImage.tag = 10;
+        selectedImage.image = [UIImage imageNamed:@"selected.png"];
+        [self.cellView addSubview:selectedImage];
+    }
+   
+    
+    // Configure the view for the selected state
+}
 #pragma mark - Memory Management
 
 - (void)dealloc

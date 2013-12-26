@@ -12,6 +12,7 @@
 
 @implementation AppDelegate
 @synthesize homeViewController, filePath, loginViewController;
+@synthesize itunesFlag = _itunesFlag;
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions
 {
@@ -87,7 +88,6 @@
     return s;
 }
 
-
 -(UIImage *)imageFromPDFWithDocumentRef:(CGPDFDocumentRef)documentRef
 {
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(documentRef, 1);
@@ -144,9 +144,13 @@
     UIImage *bookThumbinal = [self imageFromPDFWithDocumentRef:pdf];
     NSData *bookImageData = UIImageJPEGRepresentation(bookThumbinal,0.0);
     
+    
+    if(bookImageData == NULL )
+        return NO;
     NSDictionary *bookMetadata = [NSDictionary dictionaryWithObjectsAndKeys:bookMD5,@"bMD5",bookName,@"bName",fileSizeValue,@"bSize",bookImageData,@"bThumbinal", nil];
     book = [[NSMutableArray alloc] init];
     [book addObject:bookMetadata];
+    
     
     UIAlertView *uploadAlert = [[UIAlertView alloc] initWithTitle:nil message:@"هل تريد حفظ المستند الى مكتبتك ؟" delegate:self cancelButtonTitle:@"لا" otherButtonTitles:@"نعم", nil];
     [uploadAlert show];
@@ -161,13 +165,12 @@
     {
         [UserDefaults addBook:book];
         [UserDefaults addUploadingBook:book];
-        
         [book release];
-        [self.homeViewController getBooks];
+        
+       [[NSNotificationCenter defaultCenter] postNotificationName:@"getBooks" object:nil userInfo:nil];
     }
     else
     {
-        NSLog(@"%@",self.filePath);
         [[NSFileManager defaultManager] removeItemAtPath:self.filePath error:NULL];
     }
 }

@@ -7,8 +7,9 @@
 //
 
 #import <UIKit/UIKit.h>
+#import "ASIFormDataRequest.h"
 
-@interface LoginViewController : UIViewController
+@interface LoginViewController : UIViewController <ASIHTTPRequestDelegate>
 {
     NSString *currentOrientation;
     int lastOrientation;

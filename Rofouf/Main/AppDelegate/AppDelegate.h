@@ -22,4 +22,6 @@
 
 @property (strong, nonatomic) NSString *filePath;
 
+@property (nonatomic) BOOL itunesFlag;
+
 @end

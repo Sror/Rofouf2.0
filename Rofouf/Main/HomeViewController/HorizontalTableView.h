@@ -44,7 +44,7 @@
     
     id<MyComicCellDelegate> delegate;
     
-    int sectionSize ,rowheight, rowWidth;
+    int sectionSize ,rowheight, rowWidth, currentSection;
 }
 
 @property (nonatomic, retain)  ASINetworkQueue *networkQueue;

@@ -31,6 +31,7 @@
 		A20722D718670C0100A0C51C /* TBXML.m in Sources */ = {isa = PBXBuildFile; fileRef = A20722CD18670C0100A0C51C /* TBXML.m */; };
 		A20722D91867104F00A0C51C /* sample.png in Resources */ = {isa = PBXBuildFile; fileRef = A20722D81867104F00A0C51C /* sample.png */; };
 		A20722DB1867245700A0C51C /* Rofouf.png in Resources */ = {isa = PBXBuildFile; fileRef = A20722DA1867245700A0C51C /* Rofouf.png */; };
+		A29E5506186C052500C6926C /* selected.png in Resources */ = {isa = PBXBuildFile; fileRef = A29E5505186C052500C6926C /* selected.png */; };
 		A2AF003D1866C8BB003AA0D3 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2AF003C1866C8BB003AA0D3 /* Foundation.framework */; };
 		A2AF003F1866C8BB003AA0D3 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2AF003E1866C8BB003AA0D3 /* CoreGraphics.framework */; };
 		A2AF00411866C8BB003AA0D3 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A2AF00401866C8BB003AA0D3 /* UIKit.framework */; };
@@ -181,6 +182,7 @@
 		A20722D418670C0100A0C51C /* TBXML-Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "TBXML-Prefix.pch"; sourceTree = "<group>"; };
 		A20722D81867104F00A0C51C /* sample.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = sample.png; sourceTree = "<group>"; };
 		A20722DA1867245700A0C51C /* Rofouf.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Rofouf.png; sourceTree = "<group>"; };
+		A29E5505186C052500C6926C /* selected.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = selected.png; sourceTree = "<group>"; };
 		A2AF00391866C8BB003AA0D3 /* Rofouf.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Rofouf.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		A2AF003C1866C8BB003AA0D3 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		A2AF003E1866C8BB003AA0D3 /* CoreGraphics.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = CoreGraphics.framework; path = System/Library/Frameworks/CoreGraphics.framework; sourceTree = SDKROOT; };
@@ -641,6 +643,7 @@
 				A20722D81867104F00A0C51C /* sample.png */,
 				A2AF00891866E251003AA0D3 /* home~ipad.png */,
 				A2AF008A1866E251003AA0D3 /* main.png */,
+				A29E5505186C052500C6926C /* selected.png */,
 			);
 			path = Images;
 			sourceTree = "<group>";
@@ -962,6 +965,7 @@
 				A2AF008C1866E251003AA0D3 /* DroidSansArabic.ttf in Resources */,
 				A2AF01481866E329003AA0D3 /* Reader-Mark-Y@2x.png in Resources */,
 				A2AF013B1866E329003AA0D3 /* AppIcon-120.png in Resources */,
+				A29E5506186C052500C6926C /* selected.png in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -1163,6 +1167,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/staff/Documents/Projects/Rofouf\\ 2/Rofouf/Rofouf/Libraries/dropboc\\ chooser",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rofouf/Rofouf-Prefix.pch";
 				INFOPLIST_FILE = "Rofouf/Rofouf-Info.plist";
@@ -1178,6 +1186,10 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"/Users/staff/Documents/Projects/Rofouf\\ 2/Rofouf/Rofouf/Libraries/dropboc\\ chooser",
+				);
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rofouf/Rofouf-Prefix.pch";
 				INFOPLIST_FILE = "Rofouf/Rofouf-Info.plist";

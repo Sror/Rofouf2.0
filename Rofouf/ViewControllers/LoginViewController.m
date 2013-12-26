@@ -10,6 +10,8 @@
 #import "ArabicConverter.h"
 #import "Constants.h"
 #import "HomeViewController.h"
+#import "ASIHTTPRequest.h"
+#import "NetworkService.h"
 
 @interface LoginViewController ()
 
@@ -39,13 +41,35 @@
     [self.verificationCodeTf becomeFirstResponder];
 }
 
+-(void)addUser
+{
+    if ([[NetworkService getObject] checkInternetWithData])
+    {
+        ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:[NSString stringWithFormat:@"http://beta.api.rofouf.org/user/add/%@/%@",self.emailTf.text,self.passwordTf.text]]];
+        [request setRequestMethod:@"POST"];
+        request.delegate = self;
+        [request startAsynchronous];
+    }
+}
+
+-(void) requestFinished:(ASIHTTPRequest *)request
+{
+    NSLog(@"%@",request.responseString);
+}
+-(void)requestFailed:(ASIHTTPRequest *)request
+{
+    NSLog(@"failed");
+}
+
 - (IBAction)login:(id)sender
 {
-    [[NSUserDefaults standardUserDefaults] setObject:@"yes" forKey:@"logged"];
-    [[NSUserDefaults standardUserDefaults] synchronize];
+    [self addUser];
     
-    HomeViewController *homeViewController = [[HomeViewController alloc] init];
-    [self.navigationController pushViewController:homeViewController animated:YES];
+    //[[NSUserDefaults standardUserDefaults] setObject:@"yes" forKey:@"logged"];
+    //[[NSUserDefaults standardUserDefaults] synchronize];
+    
+   // HomeViewController *homeViewController = [[HomeViewController alloc] init];
+    //[self.navigationController pushViewController:homeViewController animated:YES];
 }
 
 - (void)didReceiveMemoryWarning

@@ -34,6 +34,8 @@
 {
     [super viewDidLoad];
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(getBooks) name:@"getBooks" object:nil];
+    
     bookUploadingName = [[[UILabel alloc] initWithFrame:CGRectMake(10, 10, 300, 30)] autorelease];
     [bookUploadingName setBackgroundColor:[UIColor clearColor]];
     [bookUploadingName setTextColor:[UIColor darkGrayColor]];
@@ -361,10 +363,10 @@
         
         dispatch_async(dispatch_get_main_queue(), ^{
             
-            [self checkNewFilesInItunes];
+           // [self checkNewFilesInItunes];
             self.booksArray = [NSMutableArray array];
             self.booksArray = [UserDefaults getArrayWithKey:BOOKS_METADATA_LIST];
-            
+
             if(IS_IPAD)
             {
                 booksViewsCount = self.booksArray.count / maxBooksPerView;
@@ -391,6 +393,7 @@
     LoginViewController *loginViewController = [[LoginViewController alloc] init];
     [self.navigationController pushViewController:loginViewController animated:YES];
 }
+
 
 -(void)upload
 {
@@ -427,10 +430,10 @@
     NSData *myData = [NSData dataWithContentsOfFile:filePath];
     
     NSString *userAgent = @"AKIAJ3P4BMg8i71rMSmaslyiS2OvoBrS/nZVI4qgtzzJC5TvTtRPPBKXLTOA";
-    NSString *urlString = @"http://files.rofouf.org.s3.amazonaws.com/pdf-documents/";
+    NSString *urlString = [NSString stringWithFormat:@"http://files.rofouf.org.s3.amazonaws.com/pdf-documents/%@",bookName];
     
     ASIHTTPRequest *request = [ASIHTTPRequest requestWithURL:[NSURL URLWithString:urlString]];
-    [request addRequestHeader:userAgent value:@"ASIHTTPRequest"];
+    [request addRequestHeader:@"User-Agent" value:userAgent];
     [request shouldContinueWhenAppEntersBackground];
     [request setUploadProgressDelegate:progressView];
     [request appendPostData:myData];

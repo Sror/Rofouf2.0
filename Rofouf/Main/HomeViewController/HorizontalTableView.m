@@ -216,7 +216,8 @@
 }
 
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
-{    
+{
+    
     if ([self.comicsArray count] < sectionSize)
     {
         isLessThan4 = YES;
@@ -245,21 +246,134 @@
     return cell;
 }
 
+- (NSString*)dataMD5:(NSData*)data {
+    CC_MD5_CTX md5;
+    
+    CC_MD5_Init(&md5);
+    
+    CC_MD5_Update(&md5, [data bytes], (unsigned int)[data length]);
+    
+    unsigned char digest[CC_MD5_DIGEST_LENGTH];
+    CC_MD5_Final(digest, &md5);
+    NSString* s = [NSString stringWithFormat:
+                   @"%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x%02x",
+                   digest[0], digest[1],
+                   digest[2], digest[3],
+                   digest[4], digest[5],
+                   digest[6], digest[7],
+                   digest[8], digest[9],
+                   digest[10], digest[11],
+                   digest[12], digest[13],
+                   digest[14], digest[15]];
+    return s;
+}
+
+-(UIImage *)imageFromPDFWithDocumentRef:(CGPDFDocumentRef)documentRef
+{
+    CGPDFPageRef pageRef = CGPDFDocumentGetPage(documentRef, 1);
+    CGRect pageRect = CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox);
+    
+    UIGraphicsBeginImageContext(pageRect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextTranslateCTM(context, CGRectGetMinX(pageRect),CGRectGetMaxY(pageRect));
+    CGContextScaleCTM(context, 1, -1);
+    CGContextTranslateCTM(context, -(pageRect.origin.x), -(pageRect.origin.y));
+    CGContextDrawPDFPage(context, pageRef);
+    
+    UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return finalImage;
+}
+
+
+-(void)selectBook:(NSIndexPath *)indexPath
+{
+    BookCell *cell = (BookCell *)[self.horizontalTableView cellForRowAtIndexPath:indexPath];
+ 
+    cell.selectedFlag = ! cell.selectedFlag;
+   /*
+    if(cell.selectedFlag)
+    {
+        NSArray *bookNameArray = [url.absoluteString componentsSeparatedByString:@"/"];
+        NSString *bookName = [bookNameArray lastObject];
+        self.filePath = [[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:bookName];
+        
+        NSData *pdfData   = [NSData dataWithContentsOfFile:self.filePath];
+        NSString *bookMD5 = [self dataMD5:pdfData];
+        
+        if([UserDefaults isBookExistWithMD5:bookMD5])
+        {
+            [[NSFileManager defaultManager] removeItemAtPath:self.filePath error:NULL];
+            return NO;
+        }
+        
+        NSURL *fileURL = [NSURL fileURLWithPath:self.filePath];
+        NSNumber *fileSizeValue = nil;
+        NSError *fileSizeError = nil;
+        [fileURL getResourceValue:&fileSizeValue
+                           forKey:NSURLFileSizeKey
+                            error:&fileSizeError];
+        
+        NSURL* pdfFileUrl = [NSURL fileURLWithPath:self.filePath];
+        CGPDFDocumentRef pdf = CGPDFDocumentCreateWithURL((CFURLRef)pdfFileUrl);
+        UIImage *bookThumbinal = [self imageFromPDFWithDocumentRef:pdf];
+        NSData *bookImageData = UIImageJPEGRepresentation(bookThumbinal,0.0);
+        
+        NSDictionary *bookMetadata = [NSDictionary dictionaryWithObjectsAndKeys:bookMD5,@"bMD5",bookName,@"bName",fileSizeValue,@"bSize",bookImageData,@"bThumbinal", nil];
+        book = [[NSMutableArray alloc] init];
+        [book addObject:bookMetadata];
+        
+        UIAlertView *uploadAlert = [[UIAlertView alloc] initWithTitle:nil message:@"هل تريد حفظ المستند الى مكتبتك ؟" delegate:self cancelButtonTitle:@"لا" otherButtonTitles:@"نعم", nil];
+        [uploadAlert show];
+        [uploadAlert release];
+
+    }*/
+   /* NSLog(@"%d",indexPath.row);
+    
+    float x = 0, y = 131 + 48;
+    switch (indexPath.row)
+    {
+        case 0:
+            x = 24;
+            break;
+        case 1:
+            x = 186 + 24;
+            break;
+        case 2:
+            x = (186 * 2) + 24;
+            break;
+        case 3:
+            x = (186 *3) + 24;
+            break;
+        default:
+            break;
+    }
+
+    UIImageView *selectedImage = [[UIImageView alloc] initWithFrame:CGRectMake(x, y, cell.thumbnail.frame.size.width, cell.thumbnail.frame.size.height)];
+    selectedImage.tag = indexPath.row;
+    selectedImage.image = [UIImage imageNamed:@"selected.png"];
+    [self.viewController.view addSubview:selectedImage];*/
+    
+}
+
 - (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     if(shaking)
     {
         shaking = NO ;
         [self.delegate stopShake];
-        return ;
+        return;
     }
-    
-    [tableView deselectRowAtIndexPath:indexPath animated:NO];
-    
-    NSDictionary *currentComic=nil;
+
+   // [tableView deselectRowAtIndexPath:indexPath animated:NO];
+
+    NSDictionary *currentComic = nil;
     currentComic = [self.comicsArray objectAtIndex:sectionSize-1-indexPath.row];
     
-    [self read:indexPath];
+    if(((AppDelegate *)[UIApplication sharedApplication].delegate).itunesFlag == 1)
+        [self selectBook:indexPath];
+    else
+        [self read:indexPath];
     
     /*if (![UserDefaults isComicDwonloadedWithID:[currentComic objectForKey:@"ComicId"]] && ![UserDefaults isCommicDownloadingWithID:[currentComic objectForKey:@"ComicId"]])
     {
@@ -294,6 +408,7 @@
 
 -(void)loadCellsContents:(BookCell *)cell :(int)currentIndex
 {
+    
     dispatch_queue_t concurrentQueue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     
     dispatch_async(concurrentQueue, ^
@@ -314,7 +429,7 @@
                                               [request setDownloadDestinationPath:[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:bname]];
                                               [request setTemporaryFileDownloadPath:[[NSHomeDirectory() stringByAppendingPathComponent:@"Documents"] stringByAppendingPathComponent:[NSString stringWithFormat:@"%@.download",bname]]];
                                               [request setDownloadProgressDelegate:cell.progressView];
-                                             // [request setShowAccurateProgress:YES];
+                                              //[request setShowAccurateProgress:YES];
                                               [request setAllowResumeForFileDownloads:YES];
                                               [request setShouldContinueWhenAppEntersBackground:YES];
                                               [request setUserInfo:[NSDictionary dictionaryWithObject:[NSString stringWithFormat:@"%d",currentIndex] forKey:@"name"]];
@@ -355,8 +470,7 @@
                                           else
                                               [cell.thumbnail setImageWithURL:[NSURL URLWithString:[thumbName stringByAddingPercentEscapesUsingEncoding: NSUTF8StringEncoding]] Date:[currentComic objectForKey:@"LastModifiedDate"]];*/
                                           
-                                           [cell.thumbnail setImage:[UIImage imageWithData:[[currentComic valueForKey:@"bThumbinal"] objectAtIndex:0]]];
-                                          //[cell.thumbnail setImage:[UIImage imageNamed:@"sample.png"]];
+                                          [cell.thumbnail setImage:[UIImage imageWithData:[[currentComic valueForKey:@"bThumbinal"] objectAtIndex:0]]];
                                           NSString *bookName = [[currentComic valueForKey:@"bName"] objectAtIndex:0];
                                           [cell.cellTitle setText:bookName];
                                           
