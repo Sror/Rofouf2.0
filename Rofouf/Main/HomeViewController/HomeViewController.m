@@ -118,10 +118,11 @@
 }
 
 
--(UIImage *)imageFromPDFWithDocumentRef:(CGPDFDocumentRef)documentRef {
+-(UIImage *)imageFromPDFWithDocumentRef:(CGPDFDocumentRef)documentRef
+{
     CGPDFPageRef pageRef = CGPDFDocumentGetPage(documentRef, 1);
     CGRect pageRect = CGPDFPageGetBoxRect(pageRef, kCGPDFCropBox);
-    
+        
     UIGraphicsBeginImageContext(pageRect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
     CGContextTranslateCTM(context, CGRectGetMinX(pageRect),CGRectGetMaxY(pageRect));

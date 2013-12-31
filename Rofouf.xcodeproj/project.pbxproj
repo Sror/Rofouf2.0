@@ -542,12 +542,12 @@
 		A2AF006B1866C939003AA0D3 /* Libraries */ = {
 			isa = PBXGroup;
 			children = (
+				A2AF00AF1866E328003AA0D3 /* Constants.h */,
 				A20722C918670C0100A0C51C /* TBXML */,
 				A20722B618670B9400A0C51C /* ssziparchive-master */,
 				A20722991866EB1400A0C51C /* AfNetworking */,
 				A20722951866E9FB00A0C51C /* Caching */,
 				A2AF00A91866E328003AA0D3 /* Arabic Converter */,
-				A2AF00AF1866E328003AA0D3 /* Constants.h */,
 				A2AF00B01866E328003AA0D3 /* CustomWebView */,
 				A2AF00B31866E328003AA0D3 /* Gradient */,
 				A2AF00B61866E328003AA0D3 /* HTTP */,
@@ -895,6 +895,9 @@
 				LastUpgradeCheck = 0500;
 				ORGANIZATIONNAME = "Mohamed Alaa El-Din";
 				TargetAttributes = {
+					A2AF00381866C8BB003AA0D3 = {
+						DevelopmentTeam = 7NWKC2GQK4;
+					};
 					A2AF00531866C8BB003AA0D3 = {
 						TestTargetID = A2AF00381866C8BB003AA0D3;
 					};
@@ -1167,6 +1170,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/staff/Documents/Projects/Rofouf\\ 2/Rofouf/Rofouf/Libraries/dropboc\\ chooser",
@@ -1174,7 +1179,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rofouf/Rofouf-Prefix.pch";
 				INFOPLIST_FILE = "Rofouf/Rofouf-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -1186,6 +1193,8 @@
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
 				CLANG_ENABLE_OBJC_ARC = NO;
 				CLANG_WARN__ARC_BRIDGE_CAST_NONARC = YES;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				FRAMEWORK_SEARCH_PATHS = (
 					"$(inherited)",
 					"/Users/staff/Documents/Projects/Rofouf\\ 2/Rofouf/Rofouf/Libraries/dropboc\\ chooser",
@@ -1193,7 +1202,9 @@
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Rofouf/Rofouf-Prefix.pch";
 				INFOPLIST_FILE = "Rofouf/Rofouf-Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 6.0;
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;

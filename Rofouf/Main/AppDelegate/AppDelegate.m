@@ -95,6 +95,7 @@
     
     UIGraphicsBeginImageContext(pageRect.size);
     CGContextRef context = UIGraphicsGetCurrentContext();
+    
     CGContextTranslateCTM(context, CGRectGetMinX(pageRect),CGRectGetMaxY(pageRect));
     CGContextScaleCTM(context, 1, -1);
     CGContextTranslateCTM(context, -(pageRect.origin.x), -(pageRect.origin.y));
@@ -103,6 +104,7 @@
     UIImage *finalImage = UIGraphicsGetImageFromCurrentImageContext();
     UIGraphicsEndImageContext();
     return finalImage;
+
 }
 
 - (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url
@@ -144,9 +146,9 @@
     UIImage *bookThumbinal = [self imageFromPDFWithDocumentRef:pdf];
     NSData *bookImageData = UIImageJPEGRepresentation(bookThumbinal,0.0);
     
-    
     if(bookImageData == NULL )
         return NO;
+    
     NSDictionary *bookMetadata = [NSDictionary dictionaryWithObjectsAndKeys:bookMD5,@"bMD5",bookName,@"bName",fileSizeValue,@"bSize",bookImageData,@"bThumbinal", nil];
     book = [[NSMutableArray alloc] init];
     [book addObject:bookMetadata];

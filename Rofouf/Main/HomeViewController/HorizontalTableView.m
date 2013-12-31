@@ -562,7 +562,7 @@
 #pragma mark reader
 - (void)dismissReaderViewController:(ReaderViewController *)viewController
 {
-#if (DEMO_VIEW_CONTROLLER_PUSH == TRUE)
+/*#if (DEMO_VIEW_CONTROLLER_PUSH == TRUE)
     
     [self.navigationController popViewControllerAnimated:YES];
     
@@ -570,7 +570,9 @@
     
     [self.viewController dismissViewControllerAnimated:YES completion:NULL];
     
-#endif // DEMO_VIEW_CONTROLLER_PUSH
+#endif // DEMO_VIEW_CONTROLLER_PUSH*/
+    [self.viewController.navigationController popViewControllerAnimated:NO];
+    
 }
 
 
@@ -599,8 +601,8 @@
         readerViewController.modalTransitionStyle = UIModalTransitionStyleCrossDissolve;
         readerViewController.modalPresentationStyle = UIModalPresentationFullScreen;
         
-        [self.viewController presentViewController:readerViewController animated:YES completion:NULL];
-        
+        //[self.viewController presentViewController:readerViewController animated:YES completion:NULL];
+        [self.viewController.navigationController pushViewController:readerViewController animated:NO];
 #endif // DEMO_VIEW_CONTROLLER_PUSH
 	}
 }

@@ -328,10 +328,6 @@
             
             [self getFilesFromItunes];
             
-          
-            
-            //[UserDefaults addBook:book];
-            //[UserDefaults addUploadingBook:book];
             if(IS_IPAD)
             {
                 booksViewsCount = self.booksArray.count / maxBooksPerView;
